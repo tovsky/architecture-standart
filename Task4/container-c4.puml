@@ -1,0 +1,26 @@
+@startuml
+left to right direction
+
+!includeurl https://raw.githubusercontent.com/RicardoNiepel/C4-PlantUML/master/C4_Container.puml
+
+Person(ManagerCreditOffice, "Сотрудники отдела кредитования", "Ручной расчет ставок")
+Person(ManagerCallcenter, "Менеджер кол-центра", "Ручное обновление данных")
+
+System_Boundary(ABS, "Автоматизированная Банковская Система") {
+    Container(ABSDesktop, "Десктоп-клиент", "Delphi", "Интерфейс оператора")
+    ContainerDb(ABSDB, "СУБД Oracle", "Oracle", "Хранение данных")
+}
+
+System_Boundary(InternalCallcenter, "Система партнерского кол-центра") {
+    Container(CrmCallcenter, "CRM система кол-центра")
+}
+
+System_Boundary(EmailService, "Система отправки email") {
+    Container(EmailServer, "Сервер отправки Email писем")
+}
+
+Rel(ManagerCreditOffice, EmailService, "Отправка Excel-файлов", "SMTP/IMAP")
+Rel(EmailService, ABS, "Отправка Excel-файлов", "SMTP/IMAP")
+Rel(EmailService, InternalCallcenter, "Отправка Excel-файлов", "SMTP/IMAP")
+Rel(ManagerCallcenter, InternalCallcenter, "Актуализация ставок по депозитам среди операторов")
+@enduml

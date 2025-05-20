@@ -1,0 +1,33 @@
+@startuml
+!theme amiga
+left to right direction
+
+actor Клиент as client
+actor "Сотрудник\nфронт-офиса" as front_office
+actor "Сотрудник\nбэк-офиса" as back_office
+actor "Оператор\nкол-центра" as call_center_operator
+
+rectangle "Интернет-банк" as internet_bank
+rectangle "АБС" as abs
+rectangle "Система кол-центра" as call_center_system
+rectangle "Сайт банка" as website
+rectangle "СМС-шлюз" as sms_gateway
+cloud "Телеком-оператор" as telecom
+
+client --> website : Подача заявки\nна депозит
+client --> internet_bank : Открытие депозита\nонлайн
+client --> front_office : Оформление\nв отделении
+client --> call_center_operator : Консультация\nпо депозиту
+
+website --> call_center_system : Передача заявки
+internet_bank --> abs : Создание заявки
+front_office --> abs : Оформление депозита
+call_center_operator --> call_center_system : Фиксация обращения
+call_center_system --> abs : Передача данных
+
+abs --> sms_gateway : Уведомление клиента
+sms_gateway --> telecom : Отправка СМС
+
+back_office --> abs : Расчет ставок\nи обработка
+abs --> back_office : Данные для\nрасчета ставок
+@enduml

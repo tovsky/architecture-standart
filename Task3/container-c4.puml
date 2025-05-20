@@ -1,0 +1,27 @@
+@startuml
+left to right direction
+
+!includeurl https://raw.githubusercontent.com/RicardoNiepel/C4-PlantUML/master/C4_Container.puml
+
+Person(Client, "Клиент банка", "Подача заявки на депозит на сайте или в  интернет-банке")
+Person(ManagerBackOffice, "Менеджер Бэк-Оффиса", "Проверка и подтверждение заявок на депозиты")
+
+System_Boundary(OnlineBankSystem, "Интернет-банк") {
+    Container(OnlineBank, "Интернет-банк", "ASP.NET MVC 4.5 на основе .NET Framework 4.5", "Создание заявки на депозиты")
+    ContainerDb(OnlineBankDB, "БД онлайн-банка", "СУБД MS SQL", "Информация о доступных депозитах")
+}
+
+System_Boundary(QueueSystem, "Система очередей") {
+    ContainerDb(Kafka, "Брокер сообщений Kafka", "Apache Kafka", "Асинхронное взаимодействие систем")
+}
+
+System_Boundary(ABS, "Автоматизированная Банковская Система") {
+    Container(ABSDesktop, "Десктоп-клиент", "Delphi", "Интерфейс оператора")
+    ContainerDb(ABSDB, "СУБД Oracle", "Oracle", "Хранение данных")
+}
+
+Rel(Client, OnlineBank, "Открытие депозита", "HTTPS")
+Rel(OnlineBank, Kafka, "Отправка сообщений", "Kafka Protocol")
+Rel(Kafka, ABS, "Сообщения для создания заявок на депозит")
+Rel(ManagerBackOffice, ABSDesktop, "Проверка и подтверждение заявок")
+@enduml
