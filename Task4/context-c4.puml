@@ -1,0 +1,16 @@
+@startuml
+left to right direction
+
+!includeurl https://raw.githubusercontent.com/RicardoNiepel/C4-PlantUML/master/C4_Component.puml
+
+
+Person(ManagerCreditOffice, "Сотрудник отдела кредитования", "1) Рассчитывает ставки вручную\n2) Формируют Excel-файл\n3) Отправляют email с вложением")
+Person(ManagerCallcenter, "Менеджер кол-центра", "1) Получает email с Excel-файлом\n2) Вручную актуализирует данные в системе")
+
+System(BackOffice, "Бэк-офис система", "Принимает и обрабатывает файлы ставок")
+System(InternalCrmCallcenter, "Система кол-центра", "Хранит актуальные ставки\nдля операторов")
+
+Rel(ManagerCreditOffice, BackOffice, "Отправляет ставки", "Email с Excel-вложением\n(ежедневно)")
+Rel(ManagerCreditOffice, InternalCrmCallcenter, "Отправляет ставки", "Email с Excel-вложением\n(ежедневно)")
+Rel(ManagerCallcenter, InternalCrmCallcenter, "Обновляет ставки", "Ручной ввод данных\nиз Excel в систему")
+@enduml

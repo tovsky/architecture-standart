@@ -1,0 +1,29 @@
+@startuml
+left to right direction
+
+!includeurl https://raw.githubusercontent.com/RicardoNiepel/C4-PlantUML/master/C4_Component.puml
+
+Person(Client, "Клиент банка", "Подача заявки на депозит на сайте или в  интернет-банке")
+Person(ManagerBackOffice, "Менеджер Бэк-Оффиса", "Проверка и подтверждение заявок на депозиты")
+
+Container_Boundary(StandartBankSystems, "IT системы банка Стандарт") {
+    System(Web, "Сайт банка", "Отображение информации о депозитах, принимает заявки")
+    System(OnlineBank, "Интернет-банк", "Прием заявок с подтверждением по SMS")
+    System(CallCenter, "Система колл-центра", "Обработка заявок с сайта, звонки Clientам")
+    System(ABS, "Автоматизированная банковская система", "Обработка заявок, расчет ставок, учет депозитов")
+    System(SmsGateway, "СМС-gateway", "Отправка подтверждающих SMS")
+}
+Container_Boundary(TelekomOperator, "Телеком оператор") {
+    System(TelekomSystem, "Система отправки СМС телеком-оператора", "Непосредственная отправка SMS")
+}
+
+Rel(Client, OnlineBank, "Открытие депозита")
+Rel(Client, Web, "Подает заявку на открытие депозита")
+Rel(Web, CallCenter, "Передача заявки на прозвон и согласование условий")
+Rel(OnlineBank, ABS, "Создание заявки в ABS")
+Rel(CallCenter, ABS, "Создание заявки в ABS")
+Rel(ManagerBackOffice, ABS, "Проверка и подтверждение заявок")
+Rel(ABS, SmsGateway, "Отправка SMS для подтверждений")
+Rel(SmsGateway, TelekomSystem, "Задание на отправку SMS подтверждения")
+Rel(TelekomSystem, Client, "SMS для подтверждения")
+@enduml
